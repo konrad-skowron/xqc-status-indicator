@@ -90,7 +90,7 @@ function setTitleLive(color, title, game, viewers) {
     color: color,
   });
   chrome.action.setTitle({
-    title: `xQc\n${title}\n${game}\n${viewers} 🤓`,
+    title: `${title}\n${game}\n${viewers} 🤓`,
   });
 }
 
@@ -99,7 +99,7 @@ function setTitleOffline() {
     text: '',
   });
   chrome.action.setTitle({
-    title: 'xQc\nOFFLINE',
+    title: 'OFFLINE',
   });
 }
 
