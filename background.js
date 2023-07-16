@@ -1,21 +1,25 @@
 const clientId = '2ujezphm87cg7ii7d8jvu8if66wwe7';
 const clientSecret = 'g35oxxgt6jhohutf4fh6come760640';
 let accessToken = '';
-let url = 'https://www.twitch.tv/xqc';
+let url = null;
+let isLive = false;
 
 chrome.alarms.create({ periodInMinutes: 1 });
-chrome.alarms.onAlarm.addListener(isLive);
+chrome.alarms.onAlarm.addListener(getLiveStatus);
 
-async function isLive() {
-  const kickLiveStatus = await isLiveOnKick();
-  const twitchLiveStatus = await isLiveOnTwitch();
+async function getLiveStatus() {
+  const isLiveKick = await getKickStatus();
+  const isLiveTwitch = await getTwitchStatus();
 
-  if (!kickLiveStatus && !twitchLiveStatus) {
+  if (!isLiveKick && !isLiveTwitch) {
     setTitleOffline();
+    isLive = false;
+  } else {
+    isLive = true;
   }
 }
 
-async function isLiveOnKick() {
+async function getKickStatus() {
   try {
     const response = await fetch('https://kick.com/api/v2/channels/xqc');
     if (!response.ok) {
@@ -33,7 +37,7 @@ async function isLiveOnKick() {
   return false;
 }
 
-async function isLiveOnTwitch() {
+async function getTwitchStatus() {
   try {
     const response = await fetch('https://api.twitch.tv/helix/streams?user_login=xqc', {
       method: 'GET',
@@ -79,7 +83,7 @@ async function getTwitchToken() {
   } catch (error) {
     console.log(error);
   }
-  isLive();
+  getLiveStatus();
 }
 
 function setTitleLive(color, title, game, viewers) {
@@ -104,11 +108,13 @@ function setTitleOffline() {
 }
 
 chrome.action.onClicked.addListener(() => {
-  chrome.tabs.create({ url });
+  if (isLive) {
+    chrome.tabs.create({ url });
+  }
 });
 
 const keepAlive = () => setInterval(chrome.runtime.getPlatformInfo, 20e3);
 chrome.runtime.onStartup.addListener(keepAlive);
 keepAlive();
 
-isLive();
+getLiveStatus();
