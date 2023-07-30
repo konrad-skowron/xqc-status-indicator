@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "xQc Status Indicator",
   "description": "Checks whether Félix is live",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "action": {
     "default_title": "xQc Status Indicator",
     "default_icon": {
@@ -15,7 +15,7 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": [ "alarms" ],
+  "permissions": [ "alarms", "contextMenus"],
   "icons": {
     "16": "images/monkey-16.png",
     "32": "images/monkey-32.png",

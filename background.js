@@ -111,6 +111,54 @@ chrome.action.onClicked.addListener(() => {
   if (isLive) {
     chrome.tabs.create({ url });
   }
+})
+
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    title: 'Links',
+    type: 'normal',
+    id: 'Links',
+    contexts: ['action']
+  });
+
+  const links = ['Kick', 'Twitch', 'Twitter', 'Instagram', 'Reddit', 'Discord', 'YouTube'];
+  links.forEach(link => {
+    chrome.contextMenus.create({
+      title: link,
+      type: 'normal',
+      id: link,
+      parentId: 'Links',
+      contexts: ['action']
+    });
+  });
+});
+
+chrome.contextMenus.onClicked.addListener((info) => {
+  switch (info.menuItemId) {
+    case 'Twitch':
+      chrome.tabs.create({ url: 'https://www.twitch.tv/xqc' });
+      break;
+    case 'Kick':
+      chrome.tabs.create({ url: 'https://www.kick.com/xqc' });
+      break;
+    case 'Reddit':
+      chrome.tabs.create({ url: 'https://www.reddit.com/r/xqcow/' });
+      break;
+    case 'Twitter':
+      chrome.tabs.create({ url: 'https://X.com/xqc' });
+      break;
+    case 'Instagram':
+      chrome.tabs.create({ url: 'https://www.instagram.com/xqcow1/' });
+      break;
+    case 'Discord':
+      chrome.tabs.create({ url: 'https://discord.com/invite/xqcow' });
+      break;
+    case 'YouTube':
+      chrome.tabs.create({ url: 'https://www.youtube.com/@xQcOW/videos' });
+      break;
+    default:
+      break;
+  }
 });
 
 const keepAlive = () => setInterval(chrome.runtime.getPlatformInfo, 20e3);
