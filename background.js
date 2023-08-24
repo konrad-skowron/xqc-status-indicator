@@ -121,7 +121,7 @@ chrome.runtime.onInstalled.addListener(() => {
     contexts: ['action']
   });
 
-  const links = ['Kick', 'Twitch', 'Twitter', 'Instagram', 'Reddit', 'Discord', 'YouTube'];
+  const links = ['Twitch', 'Kick', 'Twitter', 'Instagram', 'Reddit', 'Discord', 'YouTube'];
   links.forEach(link => {
     chrome.contextMenus.create({
       title: link,

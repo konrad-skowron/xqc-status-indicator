@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "xQc Status Indicator",
   "description": "Checks whether Félix is live",
-  "version": "2.1.4",
+  "version": "2.2",
   "action": {
     "default_title": "xQc Status Indicator",
     "default_icon": {
