@@ -121,6 +121,19 @@ chrome.runtime.onInstalled.addListener(() => {
     contexts: ['action']
   });
 
+  chrome.contextMenus.create({
+    type: 'separator',
+    id: 'sep1',
+    contexts: ['action']
+  });
+
+  chrome.contextMenus.create({
+    title: 'Donate',
+    type: 'normal',
+    id: 'Donate',
+    contexts: ['action']
+  });
+
   const links = ['Twitch', 'Kick', 'Twitter', 'Instagram', 'Reddit', 'Discord', 'YouTube'];
   links.forEach(link => {
     chrome.contextMenus.create({
@@ -135,6 +148,9 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.contextMenus.onClicked.addListener((info) => {
   switch (info.menuItemId) {
+    case 'Donate':
+      chrome.tabs.create({ url: 'https://www.paypal.com/donate/?hosted_button_id=Q4VZ2M4UQ93VS' });
+      break;
     case 'Twitch':
       chrome.tabs.create({ url: 'https://www.twitch.tv/xqc' });
       break;
