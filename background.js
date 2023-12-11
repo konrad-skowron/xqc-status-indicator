@@ -128,7 +128,7 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 
   chrome.contextMenus.create({
-    title: 'Donate',
+    title: 'Buy me a coffee',
     type: 'normal',
     id: 'Donate',
     contexts: ['action']
