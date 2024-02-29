@@ -106,8 +106,8 @@ function setTitleOffline() {
   });
 }
 
-chrome.action.onClicked.addListener(() => {
-  if (getLiveStatus()) {
+chrome.action.onClicked.addListener(async () => {
+  if (await getLiveStatus()) {
     chrome.tabs.create({ url });
   }
 })
