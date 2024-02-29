@@ -110,7 +110,7 @@ chrome.action.onClicked.addListener(async () => {
   if (await getLiveStatus()) {
     chrome.tabs.create({ url });
   }
-})
+});
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
