@@ -107,7 +107,9 @@ function setTitleOffline() {
 }
 
 chrome.action.onClicked.addListener(async () => {
-  if (await getLiveStatus()) {
+  const isLive = await getLiveStatus();
+
+  if (isLive) {
     chrome.tabs.create({ url });
   }
 });
