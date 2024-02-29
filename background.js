@@ -1,8 +1,8 @@
 const clientId = '2ujezphm87cg7ii7d8jvu8if66wwe7';
 const clientSecret = 'g35oxxgt6jhohutf4fh6come760640';
-let accessToken = '';
-let url = null;
-let isLive = false;
+const links = ['Twitch', 'Kick', 'YouTube', 'Reddit', 'Discord', 'Twitter', 'Instagram'];
+let accessToken;
+let url;
 
 chrome.alarms.create({ periodInMinutes: 1 });
 chrome.alarms.onAlarm.addListener(getLiveStatus);
@@ -13,10 +13,9 @@ async function getLiveStatus() {
 
   if (!isLiveKick && !isLiveTwitch) {
     setTitleOffline();
-    isLive = false;
-  } else {
-    isLive = true;
+    return false
   }
+  return true;
 }
 
 async function getKickStatus() {
@@ -108,7 +107,7 @@ function setTitleOffline() {
 }
 
 chrome.action.onClicked.addListener(() => {
-  if (isLive) {
+  if (getLiveStatus()) {
     chrome.tabs.create({ url });
   }
 })
@@ -123,18 +122,17 @@ chrome.runtime.onInstalled.addListener(() => {
 
   chrome.contextMenus.create({
     type: 'separator',
-    id: 'sep1',
+    id: 'Sep1',
     contexts: ['action']
   });
 
   chrome.contextMenus.create({
-    title: 'Buy me a coffee',
+    title: 'Donate',
     type: 'normal',
     id: 'Donate',
     contexts: ['action']
   });
 
-  const links = ['Twitch', 'Kick', 'Twitter', 'Reddit', 'Discord', 'Instagram', 'YouTube'];
   links.forEach(link => {
     chrome.contextMenus.create({
       title: link,
