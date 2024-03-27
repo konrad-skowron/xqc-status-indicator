@@ -8,8 +8,8 @@ chrome.alarms.create({ periodInMinutes: 1 });
 chrome.alarms.onAlarm.addListener(getLiveStatus);
 
 async function getLiveStatus() {
-  const isLiveKick = await getKickStatus();
   const isLiveTwitch = await getTwitchStatus();
+  const isLiveKick = await getKickStatus();
 
   if (!isLiveKick && !isLiveTwitch) {
     setTitleOffline();
