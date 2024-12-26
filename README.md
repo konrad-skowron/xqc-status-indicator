@@ -9,7 +9,7 @@ Stay updated with xQc’s streaming status at a glance!
 
 **➡️ Easy Access** - Click the icon to jump straight to the stream.
 
-Supports both Twitch and Kick for seamless tracking. *xqcL*
+Supports both Twitch and Kick for seamless tracking ![xqcL](https://cdn.frankerfacez.com/emoticon/556074/1)
 
 ## Download
 - [Google Chrome](https://chromewebstore.google.com/detail/xqc-status-indicator/offegolfbiigompmobihmncgmajnmdmg)
