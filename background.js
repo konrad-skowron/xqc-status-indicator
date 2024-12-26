@@ -93,7 +93,7 @@ function setTitleLive(color, title, game, viewers) {
     color: color,
   });
   chrome.action.setTitle({
-    title: `${title}\n${game}\n${viewers} 🤓`,
+    title: `${title}\n${game}\n👤 ${viewers}`,
   });
 }
 
