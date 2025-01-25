@@ -1,6 +1,6 @@
 const clientId = '2ujezphm87cg7ii7d8jvu8if66wwe7';
 const clientSecret = 'g35oxxgt6jhohutf4fh6come760640';
-const links = ['Twitch', 'Kick', 'YouTube', 'Reddit', 'Discord', 'Twitter', 'Instagram'];
+const links = ['Vods', 'Reddit', 'YouTube', 'Discord', '𝕏', 'Twitch', 'Kick'];
 let accessToken;
 let url;
 
@@ -160,7 +160,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
     case 'Reddit':
       chrome.tabs.create({ url: 'https://www.reddit.com/r/xqcow/' });
       break;
-    case 'Twitter':
+    case '𝕏':
       chrome.tabs.create({ url: 'https://X.com/xqc' });
       break;
     case 'Instagram':
@@ -171,6 +171,9 @@ chrome.contextMenus.onClicked.addListener((info) => {
       break;
     case 'YouTube':
       chrome.tabs.create({ url: 'https://www.youtube.com/@xQcOW/videos' });
+      break;
+    case 'Vods':
+      chrome.tabs.create({ url: 'https://xqc.wtf/' });
       break;
     default:
       break;
