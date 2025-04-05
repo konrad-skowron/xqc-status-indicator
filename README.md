@@ -18,4 +18,3 @@ Stay updated with xQc’s streaming status at a glance!
 ## Download
 <a href="https://chromewebstore.google.com/detail/xqc-status-indicator/offegolfbiigompmobihmncgmajnmdmg" target="_blank" title="Get xQc Status Indicator Extension from Chrome Web Store"><img height="64" src="https://github.com/user-attachments/assets/20a6e44b-fd46-4e6c-8ea6-aad436035753" alt="Available in the Chrome Web Store" /></a>
 <a href="https://addons.mozilla.org/en-US/firefox/addon/xqc-status-indicator/" target="_blank" title="Get xQc Status Indicator Extension from Firefox Add-ons"><img height="64" src="https://github.com/user-attachments/assets/c0e99e6b-97cf-4af2-9737-099db7d3538b" alt="Get The Add-on for Firefox" /></a>
-![xqcL](https://cdn.frankerfacez.com/emoticon/556074/2)
