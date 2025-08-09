@@ -1,8 +1,42 @@
-const clientId = '2ujezphm87cg7ii7d8jvu8if66wwe7';
-const clientSecret = 'g35oxxgt6jhohutf4fh6come760640';
-const links = ['Vods', 'Reddit', 'YouTube', 'Discord', '𝕏', 'Twitch', 'Kick'];
+const CLIENT_ID = '2ujezphm87cg7ii7d8jvu8if66wwe7';
+const CLIENT_SECRET = 'g35oxxgt6jhohutf4fh6come760640';
+const LINKS = ['Twitch', 'Kick', 'Vods', 'YouTube', 'Reddit', 'Discord', '𝕏'];
+const FIVE_MINUTES = 5 * 60;
 let accessToken;
 let url;
+
+class LiveStatus {
+  constructor({ color, title, game, viewers, url, duration }) {
+    this.color = color;
+    this.title = title;
+    this.game = game;
+    this.viewers = viewers;
+    this.url = url;
+    this.duration = duration;
+  }
+
+  static fromKick(streamData) {
+    return new LiveStatus({
+      color: '#53fc18',
+      title: streamData.livestream.session_title,
+      game: streamData.livestream.categories?.[0]?.name,
+      viewers: streamData.livestream.viewer_count,
+      url: 'https://www.kick.com/xqc',
+      duration: calculateDurationInSeconds(streamData.livestream.start_time)
+    });
+  }
+
+  static fromTwitch(streamData) {
+    return new LiveStatus({
+      color: '#eb0400',
+      title: streamData.title,
+      game: streamData.game_name,
+      viewers: streamData.viewer_count,
+      url: 'https://www.twitch.tv/xqc',
+      duration: calculateDurationInSeconds(streamData.started_at)
+    });
+  }
+}
 
 chrome.alarms.create({ periodInMinutes: 1 });
 chrome.alarms.onAlarm.addListener(getLiveStatus);
@@ -13,7 +47,21 @@ async function getLiveStatus() {
 
   if (!isLiveKick && !isLiveTwitch) {
     setTitleOffline();
-    return false
+    return false;
+  } else if (isLiveKick && isLiveTwitch) {
+    if (isLiveKick.duration < FIVE_MINUTES && isLiveTwitch.duration - isLiveKick.duration > FIVE_MINUTES) {
+      setTitleLive(isLiveKick.color, isLiveKick.title, isLiveKick.game, isLiveKick.viewers);
+      url = isLiveKick.url;
+    } else {
+      setTitleLive(isLiveTwitch.color, isLiveTwitch.title, isLiveTwitch.game, isLiveTwitch.viewers);
+      url = isLiveTwitch.url;
+    }
+  } else if (isLiveKick) {
+      setTitleLive(isLiveKick.color, isLiveKick.title, isLiveKick.game, isLiveKick.viewers);
+      url = isLiveKick.url;
+  } else if (isLiveTwitch) {
+      setTitleLive(isLiveTwitch.color, isLiveTwitch.title, isLiveTwitch.game, isLiveTwitch.viewers);
+      url = isLiveTwitch.url;
   }
   return true;
 }
@@ -25,15 +73,13 @@ async function getKickStatus() {
       throw new Error(`Error! Status: ${response.status}`);
     }
     const streamData = await response.json();
-    if (streamData?.livestream !== null) {
-      setTitleLive('#53fc18', streamData.livestream.session_title, streamData.livestream.categories[0].name, streamData.livestream.viewer_count);
-      url = 'https://www.kick.com/xqc';
-      return true;
+    if (streamData?.livestream) {
+      return LiveStatus.fromKick(streamData);
     }
   } catch (error) {
     console.log(error);
   }
-  return false;
+  return null;
 }
 
 async function getTwitchStatus() {
@@ -42,27 +88,25 @@ async function getTwitchStatus() {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
-        'Client-ID': clientId
+        'Client-ID': CLIENT_ID
       }
     });
     if (!response.ok) {
       if (response.status === 401) {
         getTwitchToken();
-        return false;
+        return null;
       }
       throw new Error(`Error! Status: ${response.status}`);
     }
     const data = await response.json();
     const streamData = data.data[0];
     if (streamData && streamData.type === 'live') {
-      setTitleLive('#eb0400', streamData.title, streamData.game_name, streamData.viewer_count);
-      url = 'https://www.twitch.tv/xqc';
-      return true;
+      return LiveStatus.fromTwitch(streamData);
     }
   } catch (error) {
     console.log(error);
   }
-  return false;
+  return null;
 }
 
 async function getTwitchToken() {
@@ -72,7 +116,7 @@ async function getTwitchToken() {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: `client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`,
+      body: `client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=client_credentials`,
     });
     if (!response.ok) {
       throw new Error(`Error! Status: ${response.status}`);
@@ -83,6 +127,11 @@ async function getTwitchToken() {
     console.log(error);
   }
   getLiveStatus();
+}
+
+function calculateDurationInSeconds(startTime) {
+  const duration = Date.now() - new Date(startTime);
+  return Math.floor(duration / 1000);
 }
 
 function setTitleLive(color, title, game, viewers) {
@@ -129,13 +178,13 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 
   chrome.contextMenus.create({
-    title: 'Donate',
+    title: 'Donate 🪙',
     type: 'normal',
     id: 'Donate',
     contexts: ['action']
   });
 
-  links.forEach(link => {
+  LINKS.forEach(link => {
     chrome.contextMenus.create({
       title: link,
       type: 'normal',
@@ -184,4 +233,4 @@ const keepAlive = () => setInterval(chrome.runtime.getPlatformInfo, 20e3);
 chrome.runtime.onStartup.addListener(keepAlive);
 keepAlive();
 
-getLiveStatus();
+getTwitchToken();
