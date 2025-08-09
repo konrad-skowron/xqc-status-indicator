@@ -50,17 +50,17 @@ async function getLiveStatus() {
     return false;
   } else if (isLiveKick && isLiveTwitch) {
     if (isLiveKick.duration < FIVE_MINUTES && isLiveTwitch.duration - isLiveKick.duration > FIVE_MINUTES) {
-      setTitleLive(isLiveKick.color, isLiveKick.title, isLiveKick.game, isLiveKick.viewers);
+      setTitleLive(isLiveKick);
       url = isLiveKick.url;
     } else {
-      setTitleLive(isLiveTwitch.color, isLiveTwitch.title, isLiveTwitch.game, isLiveTwitch.viewers);
+      setTitleLive(isLiveTwitch);
       url = isLiveTwitch.url;
     }
   } else if (isLiveKick) {
-      setTitleLive(isLiveKick.color, isLiveKick.title, isLiveKick.game, isLiveKick.viewers);
+      setTitleLive(isLiveKick);
       url = isLiveKick.url;
   } else if (isLiveTwitch) {
-      setTitleLive(isLiveTwitch.color, isLiveTwitch.title, isLiveTwitch.game, isLiveTwitch.viewers);
+      setTitleLive(isLiveTwitch);
       url = isLiveTwitch.url;
   }
   return true;
@@ -134,15 +134,15 @@ function calculateDurationInSeconds(startTime) {
   return Math.floor(duration / 1000);
 }
 
-function setTitleLive(color, title, game, viewers) {
+function setTitleLive(status) {
   chrome.action.setBadgeText({
     text: 'LIVE',
   });
   chrome.action.setBadgeBackgroundColor({
-    color: color,
+    color: status.color,
   });
   chrome.action.setTitle({
-    title: `${title}\n${game}\n👤 ${viewers}`,
+    title: `${status.title}\n${status.game}\n👤 ${status.viewers}`,
   });
 }
 
