@@ -172,6 +172,12 @@ function sendNotification(title, game) {
   });
 }
 
+chrome.notifications.onClicked.addListener(() => {
+  if (url) {
+    chrome.tabs.create({ url });
+  }
+});
+
 chrome.action.onClicked.addListener(async () => {
   const isLive = await getLiveStatus();
 
