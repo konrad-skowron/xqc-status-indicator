@@ -1,17 +1,19 @@
 const CLIENT_ID = '2ujezphm87cg7ii7d8jvu8if66wwe7';
 const CLIENT_SECRET = 'g35oxxgt6jhohutf4fh6come760640';
 const LINKS = ['Twitch', 'Kick', 'Vods', 'YouTube', 'Reddit', 'Discord', '𝕏'];
+const TWITCH = 'https://www.twitch.tv/xqc';
+const KICK = 'https://www.kick.com/xqc';
 const FIVE_MINUTES = 5 * 60;
+
 let accessToken;
 let url;
 
 class LiveStatus {
-  constructor({ color, title, game, viewers, url, duration }) {
+  constructor({ color, title, game, viewers, duration }) {
     this.color = color;
     this.title = title;
     this.game = game;
     this.viewers = viewers;
-    this.url = url;
     this.duration = duration;
   }
 
@@ -21,7 +23,6 @@ class LiveStatus {
       title: streamData.livestream.session_title,
       game: streamData.livestream.categories?.[0]?.name,
       viewers: streamData.livestream.viewer_count,
-      url: 'https://www.kick.com/xqc',
       duration: calculateDurationInSeconds(streamData.livestream.start_time)
     });
   }
@@ -32,7 +33,6 @@ class LiveStatus {
       title: streamData.title,
       game: streamData.game_name,
       viewers: streamData.viewer_count,
-      url: 'https://www.twitch.tv/xqc',
       duration: calculateDurationInSeconds(streamData.started_at)
     });
   }
@@ -51,17 +51,17 @@ async function getLiveStatus() {
   } else if (isLiveKick && isLiveTwitch) {
     if (isLiveKick.duration < FIVE_MINUTES && isLiveTwitch.duration - isLiveKick.duration > FIVE_MINUTES) {
       setTitleLive(isLiveKick);
-      url = isLiveKick.url;
+      url = KICK;
     } else {
       setTitleLive(isLiveTwitch);
-      url = isLiveTwitch.url;
+      url = TWITCH;
     }
   } else if (isLiveKick) {
       setTitleLive(isLiveKick);
-      url = isLiveKick.url;
+      url = KICK;
   } else if (isLiveTwitch) {
       setTitleLive(isLiveTwitch);
-      url = isLiveTwitch.url;
+      url = TWITCH;
   }
   return true;
 }
@@ -144,6 +144,10 @@ function setTitleLive(status) {
   chrome.action.setTitle({
     title: `${status.title}\n${status.game}\n👤 ${status.viewers}`,
   });
+  
+  if (status.duration < 60) {
+    sendNotification(status.title, status.game);
+  }
 }
 
 function setTitleOffline() {
@@ -152,6 +156,19 @@ function setTitleOffline() {
   });
   chrome.action.setTitle({
     title: 'OFFLINE',
+  });
+}
+
+function sendNotification(title, game) {
+  chrome.storage.sync.get(['notifications'], (result) => {
+    if (result.notifications ?? false) {
+      chrome.notifications.create({
+        type: 'basic',
+        iconUrl: 'images/monkey-128.png',
+        title: `${url === KICK ? '🟢' : '🔴'} xQc is live!`,
+        message: `${title}\n${game}`
+      });
+    }
   });
 }
 
