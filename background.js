@@ -24,7 +24,7 @@ class LiveStatus {
       title: streamData.livestream.session_title,
       game: streamData.livestream.categories?.[0]?.name,
       viewers: streamData.livestream.viewer_count,
-      duration: calculateDurationInSeconds(streamData.livestream.start_time),
+      duration: calculateDurationInSeconds(formatUtcString(streamData.livestream.start_time)),
       url: KICK
     });
   }
@@ -134,6 +134,10 @@ async function getTwitchToken() {
 function calculateDurationInSeconds(startTime) {
   const duration = Date.now() - new Date(startTime);
   return Math.floor(duration / 1000);
+}
+
+function formatUtcString(input) {
+  return input.replace(" ", "T") + "Z";
 }
 
 function setTitleLive(status) {
