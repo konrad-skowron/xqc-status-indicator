@@ -58,10 +58,10 @@ async function getLiveStatus() {
       setTitleLive(isLiveTwitch);
     } else if (result.prioritization === 'Kick' && isLiveKick) {
       setTitleLive(isLiveKick);
-    } else if (isLiveKick) {
-      setTitleLive(isLiveKick);
     } else if (isLiveTwitch) {
       setTitleLive(isLiveTwitch);
+    } else if (isLiveKick) {
+      setTitleLive(isLiveKick);
     }
   });
 
