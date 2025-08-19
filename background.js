@@ -9,12 +9,13 @@ let accessToken;
 let url;
 
 class LiveStatus {
-  constructor({ color, title, game, viewers, duration }) {
+  constructor({ color, title, game, viewers, duration, url }) {
     this.color = color;
     this.title = title;
     this.game = game;
     this.viewers = viewers;
     this.duration = duration;
+    this.url = url;
   }
 
   static fromKick(streamData) {
@@ -23,7 +24,8 @@ class LiveStatus {
       title: streamData.livestream.session_title,
       game: streamData.livestream.categories?.[0]?.name,
       viewers: streamData.livestream.viewer_count,
-      duration: calculateDurationInSeconds(streamData.livestream.start_time)
+      duration: calculateDurationInSeconds(streamData.livestream.start_time),
+      url: KICK
     });
   }
 
@@ -33,7 +35,8 @@ class LiveStatus {
       title: streamData.title,
       game: streamData.game_name,
       viewers: streamData.viewer_count,
-      duration: calculateDurationInSeconds(streamData.started_at)
+      duration: calculateDurationInSeconds(streamData.started_at),
+      url: TWITCH
     });
   }
 }
@@ -45,24 +48,23 @@ async function getLiveStatus() {
   const isLiveTwitch = await getTwitchStatus();
   const isLiveKick = await getKickStatus();
 
-  if (!isLiveKick && !isLiveTwitch) {
+   if (!isLiveKick && !isLiveTwitch) {
     setTitleOffline();
     return false;
-  } else if (isLiveKick && isLiveTwitch) {
-    if (isLiveKick.duration < FIVE_MINUTES && isLiveTwitch.duration - isLiveKick.duration > FIVE_MINUTES) {
-      setTitleLive(isLiveKick);
-      url = KICK;
-    } else {
-      setTitleLive(isLiveTwitch);
-      url = TWITCH;
-    }
-  } else if (isLiveKick) {
-      setTitleLive(isLiveKick);
-      url = KICK;
-  } else if (isLiveTwitch) {
-      setTitleLive(isLiveTwitch);
-      url = TWITCH;
   }
+
+  chrome.storage.sync.get(['prioritization'], (result) => {
+    if (result.prioritization === 'Twitch' && isLiveTwitch) {
+      setTitleLive(isLiveTwitch);
+    } else if (result.prioritization === 'Kick' && isLiveKick) {
+      setTitleLive(isLiveKick);
+    } else if (isLiveKick) {
+      setTitleLive(isLiveKick);
+    } else if (isLiveTwitch) {
+      setTitleLive(isLiveTwitch);
+    }
+  });
+
   return true;
 }
 
@@ -135,6 +137,8 @@ function calculateDurationInSeconds(startTime) {
 }
 
 function setTitleLive(status) {
+  url = status.url;
+  
   chrome.action.setBadgeText({
     text: 'LIVE',
   });
@@ -249,6 +253,12 @@ chrome.contextMenus.onClicked.addListener((info) => {
       break;
     default:
       break;
+  }
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'updateLiveStatus') {
+    getLiveStatus();
   }
 });
 

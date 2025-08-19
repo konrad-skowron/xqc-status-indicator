@@ -3,6 +3,9 @@
 <head>
   <title>xQc Status Indicator - Options</title>
   <style>
+    legend {
+      margin-bottom: 5px;
+    }
     body { 
       font: 1.1rem sans-serif; 
       background: #1a1a1a; 
@@ -12,14 +15,37 @@
       border: 1px solid #444; 
       border-radius: 5px; 
     }
+    div {
+      margin: 5px 0;
+    }
+    select {
+      background: #333;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 4px 8px;
+      border-radius: 3px;
+      margin-left: 5px;
+    }
+    select:focus {
+      outline: none;
+      border-color: #666;
+    }
   </style>
 </head>
 <body>
   <fieldset>
     <legend>Options</legend>
     <div>
+      <label for="notifications">Send browser notification when stream starts</label>
       <input type="checkbox" id="notifications">
-      <label for="notifications">Notify when xQc goes live</label>
+    </div>
+    <br>
+    <div>
+      <label for="prioritization">Platform priority when live on both</label>
+      <select id="prioritization">
+        <option value="Twitch">Twitch</option>
+        <option value="Kick">Kick</option>
+      </select>
     </div>
   </fieldset>
   <script src="options.js"></script>
